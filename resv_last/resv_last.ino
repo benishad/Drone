@@ -4,14 +4,14 @@
 #include "RF24.h"
 
 Servo servo;
-int servo_pin = 9;
+int servo_pin = 13;
 int message[2];
-RF24 radio(7,8); // 7번핀 CE, 8번핀 CSN으로 SPI통신 설정
+RF24 radio(12,14); // 7번핀 CE, 8번핀 CSN으로 SPI통신 설정
 byte addresses[6] = "abcde";
 
 void setup() 
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   radio.begin();
   radio.setPALevel(RF24_PA_LOW);
   radio.openReadingPipe(0,addresses); // 데이터를 받을 주소 설정
@@ -26,11 +26,11 @@ void loop()
     
     if(message[0] == 2)
     {
-      servo.write(0); // 서보모터 최고속도
+      servo.write(90); //서보모터 멈춤
     }
     else
     {
-      servo.write(90); //서보모터 멈춤
+      servo.write(0); // 서보모터 최고속도
     }    
     Serial.print(message[0]);
     Serial.print(", ");

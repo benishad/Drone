@@ -1,6 +1,9 @@
 //중계 1
+#include <HardwareSerial.h>
 #include <SPI.h>
 #include "RF24.h"
+
+HardwareSerial Unit1(1);
 
 char DATA;
 int message[2];
@@ -17,6 +20,7 @@ byte addresses[6] = "12345";
 
 void setup() {
   Serial.begin(115200);
+  Unit1.begin(115200, SERIAL_8N1, 17,16);
   radio.begin(); // nRF24L01모듈 초기화
 
   // 전원 공급 관련 문제가 발생하지 않도록 PA레벨을 LOW로 설정, RF24_PA_MAX가 기본값
@@ -31,13 +35,14 @@ void loop() {
   {
     radio.read(message, sizeof(message));
     if(message[0] == 2){
-      Serial.write('a');
+      Unit1.write('a');
     }
     else{
-      Serial.write('b');
+      Unit1.write('b');
     }
     Serial.print(message[0]);
     Serial.print(", ");
     Serial.println(message[1]);
+    delay(10);
   }
 }
