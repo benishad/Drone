@@ -8,6 +8,17 @@ int LED_BLUE = 5;
 int LED_GREEN = 4;
 int servo_pin = 13;
 int message[4];
+
+int read_joystick_x =0; // 조이스틱 x의 값을 변수 선언
+int read_joystick_y =0; // 조이스틱 y의 값을 변수 선언
+int joystickButtonValue =0; // 조이스틱 읽은 값 변수 선언
+int buttonValue = 0; // 스위치 읽은 값 변수 선언
+
+int logJoystickValueX = 0;
+int logJoystickValueY = 0;
+int logJoystickValueButton = 0;
+int logButtonValue = 0;
+
 RF24 radio(12,14); // 7번핀 CE, 8번핀 CSN으로 SPI통신 설정
 byte addresses[6] = "abcde";
 
@@ -27,33 +38,54 @@ void loop()
   if(radio.available())
   {
     radio.read(message, sizeof(message));
-    
-    if(message[0] == 1)
-    {
-      digitalWrite(LED_BLUE , HIGH);
-      digitalWrite(LED_GREEN , HIGH);
-    }
-    else if(message[1] == 1)
-    {
-      digitalWrite(LED_BLUE , LOW);
-      digitalWrite(LED_GREEN , LOW);
-    }
-    else if(message[2] == 1){
-      digitalWrite(LED_BLUE , LOW);
-      digitalWrite(LED_GREEN , HIGH);
-      //servo.write(0);
-    }
-    else if(message[3] == 1){
-      digitalWrite(LED_BLUE , HIGH);
-      digitalWrite(LED_GREEN , LOW);
-       //servo.write(90);
-    }
-    Serial.print(message[0]);
-    Serial.print(",");
-    Serial.print(message[1]);
-    Serial.print(",");
-    Serial.print(message[2]);
-    Serial.print(",");
-    Serial.println(message[2]);
+
+    READJOYSTICK();
+    READBUTTON();
+    LEDBLUE();
+    LEDGREEN();
+    LOG();
   }
+}
+
+void READJOYSTICK(){
+  read_joystick_x = message[0];
+  read_joystick_y = message[1];
+  joystickButtonValue = message[2];
+
+  logJoystickValueX = read_joystick_x;
+  logJoystickValueY = read_joystick_y;
+  logJoystickValueButton = joystickButtonValue;  
+}
+
+void READBUTTON(){
+  buttonValue = message[3];
+
+  logButtonValue = buttonValue;
+}
+
+void LEDBLUE(){
+  if(joystickButtonValue == 0)
+    {
+      digitalWrite(LED_BLUE , HIGH);
+    }
+    else
+      digitalWrite(LED_BLUE , LOW);
+}
+
+void LEDGREEN(){
+  if(buttonValue == 1){
+      digitalWrite(LED_GREEN , HIGH);
+    }
+    else
+      digitalWrite(LED_GREEN , LOW);
+}
+
+void LOG(){
+  Serial.print(logJoystickValueX);
+  Serial.print(",");
+  Serial.print(logJoystickValueY);
+  Serial.print(",");
+  Serial.print(logJoystickValueButton);
+  Serial.print(",");
+  Serial.println(logButtonValue);
 }
