@@ -5,18 +5,7 @@
 
 HardwareSerial Unit1(1);
 
-int read_joystick_x = 0; // 조이스틱 x의 값을 변수 선언
-int read_joystick_y = 0; // 조이스틱 y의 값을 변수 선언
-int joystickButtonValue = 0; // 조이스틱 읽은 값 변수 선언
-int buttonValue = 0; // 스위치 읽은 값 변수 선언
-
-int logJoystickValueX = 0;
-int logJoystickValueY = 0;
-int logJoystickValueButton = 0;
-int logButtonValue = 0;
-
-char buf[20];
-
+char DATA;
 int message[4];
 
 // 0번과 1번으로 송수신을 결정
@@ -45,55 +34,25 @@ void loop() {
   if(radio.available())
   {
     radio.read(message, sizeof(message));
-    
-    READJOYSTICK();
-    READBUTTON();
-    WRITEPRINT();
-    LOG();
-    
+    if(message[0] == 1){
+      Unit1.write('a');
+    }
+    else if(message[1] == 1){
+      Unit1.write('b');
+    }
+    else if(message[2] == 1){
+      Unit1.write('c');
+    }
+    else if(message[3] == 1){
+      Unit1.write('d');
+    }
+    Serial.print(message[0]);
+    Serial.print(",");
+    Serial.print(message[1]);
+    Serial.print(",");
+    Serial.print(message[2]);
+    Serial.print(",");
+    Serial.println(message[3]);
     delay(10);
   }
-}
-
-void READJOYSTICK(){
-  read_joystick_x = message[0];
-  read_joystick_y = message[1];
-  joystickButtonValue = message[2];
-
-  logJoystickValueX = read_joystick_x;
-  logJoystickValueY = read_joystick_y;
-  logJoystickValueButton = joystickButtonValue;
-}
-
-void READBUTTON(){
-  buttonValue = message[3];
-
-  logButtonValue = buttonValue;
-}
-
-void WRITEPRINT(){
-  Unit1.print("A");
-  sprintf(buf, "%04d", read_joystick_x);
-  Unit1.print(buf);
-  Unit1.print("B");
-  sprintf(buf, "%04d", read_joystick_y);
-  Unit1.print(buf);
-  Unit1.print("C");
-  Unit1.print(joystickButtonValue);
-  Unit1.print("D");
-  Unit1.print(buttonValue);
-  Unit1.println("E");
-}
-
-void LOG(){
-  sprintf(buf, "%04d", logJoystickValueX);
-  Serial.print(buf);
-  Serial.print("A");
-  sprintf(buf, "%04d", logJoystickValueY);
-  Serial.print(buf);
-  Serial.print("A");
-  Serial.print(logJoystickValueButton);
-  Serial.print("A");
-  Serial.print(buttonValue);
-  Serial.println("A");
 }
