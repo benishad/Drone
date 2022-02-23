@@ -1,23 +1,27 @@
 //조종기 1
 #include <SPI.h>
 #include "RF24.h"
+
 int buttonOne = 5; // 스위치 D6에 연결하고 변수 선언
 int buttonTwo = 17;
 int joystickButton = 4; //스위치 D4에 연결하고 변수선언
 int joystickX = 2;
 int joystickY = 15;
+int Potentionmeter = 34;
 
 int buttonOneValue = 0; // 스위치 읽은 값 변수 선언
 int buttonTwoValue = 0;
 int joystickButtonValue =0; // 스위치 읽은 값 변수 선언
 int read_joystick_x =0; // 조이스틱 x의 저항값을 받아 줄 수 있는 변수 선언
 int read_joystick_y =0; // 조이스틱 y의 저항값을 받아 줄 수 있는 변수 선언
+int PotenValue = 0;
 
 int logJoystickValueX = 0;
 int logJoystickValueY = 0;
 int logJoystickValueButton = 0;
 int logButtonOneValue = 0;
 int logButtonTwoValue = 0;
+int logPotenValue = 0;
 
 // 0번과 1번으로 송수신을 결정
 // 수신 아두이노는 0으로, 송신 아두이노는 1로 설정하고 컴파일
@@ -29,7 +33,7 @@ RF24 radio(12,14); // 7번핀 CE, 8번핀 CSN으로 SPI통신 설정
 // 5 byte의 문자열로 주소값 설정가능
 byte addresses[6] = "12345";
 
-int message[5];
+int message[6];
 
 void setup()
 {
@@ -54,8 +58,13 @@ void loop()
   //int A = read_joystick_x; 나중에 로그 만들때 사용할 기록을 다시 저장하는 변수 예시
   JOYSTICK();
   BUTTON();
-  LOG();
   
+  PotenValue = analogRead(Potentionmeter);
+  PotenValue = map(PotenValue, 0, 1023, 1000, 1500);
+  logPotenValue = PotenValue;
+  message[5] = PotenValue;
+  
+  LOG();
   radio.write(message, sizeof(message)); // 해당 텍스트를 송신
   delay(100);//원래는100줬음
 }
@@ -94,5 +103,7 @@ void LOG(){
   Serial.print(" , ");
   Serial.print(logButtonOneValue);
   Serial.print(" , ");
-  Serial.println(logButtonTwoValue);
+  Serial.print(logButtonTwoValue);
+  Serial.print(" , ");
+  Serial.println(logPotenValue);
 }
