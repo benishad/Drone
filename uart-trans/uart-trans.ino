@@ -8,16 +8,18 @@ HardwareSerial Unit1(1);
 int read_joystick_x = 0; // 조이스틱 x의 값을 변수 선언
 int read_joystick_y = 0; // 조이스틱 y의 값을 변수 선언
 int joystickButtonValue = 0; // 조이스틱 읽은 값 변수 선언
-int buttonValue = 0; // 스위치 읽은 값 변수 선언
+int buttonOneValue = 0; // 스위치 읽은 값 변수 선언
+int buttonTwoValue = 0;
 
 int logJoystickValueX = 0;
 int logJoystickValueY = 0;
 int logJoystickValueButton = 0;
-int logButtonValue = 0;
+int logButtonOneValue = 0;
+int logButtonTwoValue = 0;
 
-char buf[20];
+char buf[30];
 
-int message[4];
+int message[5];
 
 // 0번과 1번으로 송수신을 결정
 // 수신 아두이노는 0으로, 송신 아두이노는 1로 설정하고 컴파일
@@ -66,9 +68,11 @@ void READJOYSTICK(){
 }
 
 void READBUTTON(){
-  buttonValue = message[3];
+  buttonOneValue = message[3];
+  buttonTwoValue = message[4];
 
-  logButtonValue = buttonValue;
+  logButtonOneValue = buttonOneValue;
+  logButtonTwoValue = buttonTwoValue;
 }
 
 void WRITEPRINT(){
@@ -81,8 +85,10 @@ void WRITEPRINT(){
   Unit1.print("C");
   Unit1.print(joystickButtonValue);
   Unit1.print("D");
-  Unit1.print(buttonValue);
-  Unit1.println("E");
+  Unit1.print(buttonOneValue);
+  Unit1.print("E");
+  Unit1.print(buttonTwoValue);
+  Unit1.println("F");
 }
 
 void LOG(){
@@ -94,6 +100,8 @@ void LOG(){
   Serial.print("A");
   Serial.print(logJoystickValueButton);
   Serial.print("A");
-  Serial.print(buttonValue);
+  Serial.print(buttonOneValue);
+  Serial.print("A");
+  Serial.print(buttonTwoValue);
   Serial.println("A");
 }

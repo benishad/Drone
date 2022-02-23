@@ -3,21 +3,27 @@
 #include <SPI.h>
 #include "RF24.h"
 
-Servo servo;
+Servo bldc_moter;
 int LED_BLUE = 5;
 int LED_GREEN = 4;
+int LED_WHITE = 17;
 int servo_pin = 13;
-int message[4];
+
+int message[5];
 
 int read_joystick_x =0; // 조이스틱 x의 값을 변수 선언
 int read_joystick_y =0; // 조이스틱 y의 값을 변수 선언
 int joystickButtonValue =0; // 조이스틱 읽은 값 변수 선언
-int buttonValue = 0; // 스위치 읽은 값 변수 선언
+int buttonOneValue = 0; // 스위치 읽은 값 변수 선언
+int buttonTwoValue = 0;
 
 int logJoystickValueX = 0;
 int logJoystickValueY = 0;
 int logJoystickValueButton = 0;
-int logButtonValue = 0;
+int logButtonOneValue = 0;
+int logButtonTwoValue = 0;
+
+int moterSpeed = 50;
 
 RF24 radio(12,14); // 7번핀 CE, 8번핀 CSN으로 SPI통신 설정
 byte addresses[6] = "abcde";
@@ -29,9 +35,10 @@ void setup()
   radio.setPALevel(RF24_PA_LOW);
   radio.openReadingPipe(0,addresses); // 데이터를 받을 주소 설정
   radio.startListening(); // 읽는 pipe 주소의 data Listening 시작
-  servo.attach(servo_pin);
+  bldc_moter.attach(servo_pin);
   pinMode(LED_BLUE, OUTPUT);
   pinMode(LED_GREEN, OUTPUT);
+  pinMode(LED_WHITE, OUTPUT);
 }
 void loop() 
 {
@@ -43,6 +50,8 @@ void loop()
     READBUTTON();
     LEDBLUE();
     LEDGREEN();
+    LEDWHITE();
+    BLDC_MOTER_RUNNING();
     LOG();
   }
 }
@@ -58,9 +67,11 @@ void READJOYSTICK(){
 }
 
 void READBUTTON(){
-  buttonValue = message[3];
+  buttonOneValue = message[3];
+  buttonTwoValue = message[4];
 
-  logButtonValue = buttonValue;
+  logButtonOneValue = buttonOneValue;
+  logButtonTwoValue = buttonTwoValue;
 }
 
 void LEDBLUE(){
@@ -73,19 +84,43 @@ void LEDBLUE(){
 }
 
 void LEDGREEN(){
-  if(buttonValue == 1){
+  if(buttonOneValue == 1){
       digitalWrite(LED_GREEN , HIGH);
     }
     else
       digitalWrite(LED_GREEN , LOW);
 }
 
+void LEDWHITE(){
+  if(buttonTwoValue == 1){
+      digitalWrite(LED_WHITE , HIGH);
+    }
+    else
+      digitalWrite(LED_WHITE , LOW);
+}
+
+void BLDC_MOTER_RUNNING(){
+  if(read_joystick_x > 4000){
+    moterSpeed += 5;
+    delay(1000);
+  }
+  else if(read_joystick_x < 1000){
+    moterSpeed -= 5;
+    delay(1000);
+  }
+  bldc_moter.write(moterSpeed);
+}
+
 void LOG(){
+  Serial.print(moterSpeed);
+  Serial.print(",");
   Serial.print(logJoystickValueX);
   Serial.print(",");
   Serial.print(logJoystickValueY);
   Serial.print(",");
   Serial.print(logJoystickValueButton);
   Serial.print(",");
-  Serial.println(logButtonValue);
+  Serial.print(logButtonOneValue);
+  Serial.print(",");
+  Serial.println(logButtonTwoValue);
 }

@@ -11,14 +11,16 @@ byte addresses[6] = "abcde";
 int read_joystick_x =0; // 조이스틱 x의 값을 변수 선언
 int read_joystick_y =0; // 조이스틱 y의 값을 변수 선언
 int joystickButtonValue =0; // 조이스틱 읽은 값 변수 선언
-int buttonValue = 0; // 스위치 읽은 값 변수 선언
+int buttonOneValue = 0; // 스위치 읽은 값 변수 선언
+int buttonTwoValue = 0;
 
 int logJoystickValueX = 0;
 int logJoystickValueY = 0;
 int logJoystickValueButton = 0;
-int logButtonValue = 0;
+int logButtonOneValue = 0;
+int logButtonTwoValue = 0;
 
-int message[4];
+int message[5];
 
 void setup() {
   Serial.begin(115200);
@@ -36,16 +38,18 @@ void loop() {
     read_joystick_x = inString.substring(1, 5).toInt();
     read_joystick_y = inString.substring(6, 10).toInt();
     joystickButtonValue = inString.substring(11, 12).toInt();
-    buttonValue = inString.substring(13, 14).toInt();
+    buttonOneValue = inString.substring(13, 14).toInt();
+    buttonTwoValue = inString.substring(15, 16).toInt();
     
     LOG();
     
     message[0] = read_joystick_x;
     message[1] = read_joystick_y;
     message[2] = joystickButtonValue;
-    message[3] = buttonValue;
+    message[3] = buttonOneValue;
+    message[4] = buttonTwoValue;
     radio.write(message, sizeof(message)); // 해당 텍스트를 송신
-    delay(5);
+    delay(20);
   }
 }
 
@@ -53,10 +57,12 @@ void LOG(){
   logJoystickValueX = read_joystick_x;
   logJoystickValueY = read_joystick_y;
   logJoystickValueButton = joystickButtonValue;
-  logButtonValue = buttonValue;
+  logButtonOneValue = buttonOneValue;
+  logButtonTwoValue = buttonTwoValue;
   
   Serial.print(logJoystickValueX);
   Serial.print(logJoystickValueY);
   Serial.print(logJoystickValueButton);
-  Serial.println(logButtonValue);
+  Serial.print(logButtonOneValue);
+  Serial.println(logButtonTwoValue);
 }
