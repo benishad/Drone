@@ -8,16 +8,20 @@ HardwareSerial Unit1(1);
 int read_joystick_x = 0; // 조이스틱 x의 값을 변수 선언
 int read_joystick_y = 0; // 조이스틱 y의 값을 변수 선언
 int joystickButtonValue = 0; // 조이스틱 읽은 값 변수 선언
-int buttonValue = 0; // 스위치 읽은 값 변수 선언
+int buttonOneValue = 0; // 스위치 읽은 값 변수 선언
+int buttonTwoValue = 0;
+int potentionValue = 0;
 
 int logJoystickValueX = 0;
 int logJoystickValueY = 0;
 int logJoystickValueButton = 0;
-int logButtonValue = 0;
+int logButtonOneValue = 0;
+int logButtonTwoValue = 0;
+int logPotentionValue = 0;
 
-char buf[20];
+char buf[30];
 
-int message[4];
+int message[6];
 
 // 0번과 1번으로 송수신을 결정
 // 수신 아두이노는 0으로, 송신 아두이노는 1로 설정하고 컴파일
@@ -49,6 +53,7 @@ void loop() {
     READJOYSTICK();
     READBUTTON();
     WRITEPRINT();
+    POTENTIONMETER();
     LOG();
     
     delay(10);
@@ -66,9 +71,17 @@ void READJOYSTICK(){
 }
 
 void READBUTTON(){
-  buttonValue = message[3];
+  buttonOneValue = message[3];
+  buttonTwoValue = message[4];
 
-  logButtonValue = buttonValue;
+  logButtonOneValue = buttonOneValue;
+  logButtonTwoValue = buttonTwoValue;
+}
+
+void POTENTIONMETER(){
+  potentionValue = message[5];
+
+  logPotentionValue = potentionValue;
 }
 
 void WRITEPRINT(){
@@ -79,10 +92,15 @@ void WRITEPRINT(){
   sprintf(buf, "%04d", read_joystick_y);
   Unit1.print(buf);
   Unit1.print("C");
-  Unit1.print(joystickButtonValue);
+  sprintf(buf, "%04d", potentionValue);
+  Unit1.print(buf);
   Unit1.print("D");
-  Unit1.print(buttonValue);
-  Unit1.println("E");
+  Unit1.print(joystickButtonValue);
+  Unit1.print("E");
+  Unit1.print(buttonOneValue);
+  Unit1.print("F");
+  Unit1.print(buttonTwoValue);
+  Unit1.println("G");
 }
 
 void LOG(){
@@ -92,8 +110,13 @@ void LOG(){
   sprintf(buf, "%04d", logJoystickValueY);
   Serial.print(buf);
   Serial.print("A");
+  sprintf(buf, "%04d", potentionValue);
+  Serial.print(buf);
+  Serial.print("A");
   Serial.print(logJoystickValueButton);
   Serial.print("A");
-  Serial.print(buttonValue);
+  Serial.print(buttonOneValue);
+  Serial.print("A");
+  Serial.print(buttonTwoValue);
   Serial.println("A");
 }
