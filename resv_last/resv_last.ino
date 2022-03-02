@@ -1,7 +1,10 @@
 //드론 1
+#include "BluetoothSerial.h"
 #include <Servo.h>
 #include <SPI.h>
 #include "RF24.h"
+
+BluetoothSerial SerialBT;
 
 Servo BLDC1;
 
@@ -32,6 +35,8 @@ byte addresses[6] = "abcde";
 void setup() 
 {
   Serial.begin(115200);
+  SerialBT.begin("ESP_DRONE_32"); //Bluetooth device name
+  Serial.println("The device started, now you can pair it with bluetooth!");
   radio.begin();
   radio.setPALevel(RF24_PA_LOW);
   radio.openReadingPipe(0,addresses); // 데이터를 받을 주소 설정
@@ -125,4 +130,17 @@ void LOG(){
   Serial.print(logButtonOneValue);
   Serial.print(",");
   Serial.println(logButtonTwoValue);
+
+  SerialBT.print(logbldcOneValue);
+  SerialBT.print(",");
+  SerialBT.print(logJoystickValueX);
+  SerialBT.print(",");
+  SerialBT.print(logJoystickValueY);
+  SerialBT.print(",");
+  SerialBT.print(logJoystickValueButton);
+  SerialBT.print(",");
+  SerialBT.print(logButtonOneValue);
+  SerialBT.print(",");
+  SerialBT.println(logButtonTwoValue);
+  
 }
