@@ -5,23 +5,23 @@
 
 HardwareSerial Unit1(1);
 
-int read_joystick_x = 0; // 조이스틱 x의 값을 변수 선언
-int read_joystick_y = 0; // 조이스틱 y의 값을 변수 선언
-int joystickButtonValue = 0; // 조이스틱 읽은 값 변수 선언
-int buttonOneValue = 0; // 스위치 읽은 값 변수 선언
-int buttonTwoValue = 0;
-int potentionValue = 0;
+//읽기------------------------------------------------------------------
 
-int logJoystickValueX = 0;
-int logJoystickValueY = 0;
-int logJoystickValueButton = 0;
-int logButtonOneValue = 0;
-int logButtonTwoValue = 0;
-int logPotentionValue = 0;
+int read_joystick_x_1 = 0; // 조이스틱 x의 값을 변수 선언
+int read_joystick_y_1 = 0; // 조이스틱 y의 값을 변수 선언
+int read_joystick_x_2 = 0;
+int read_joystick_y_2 = 0;
+
+//로그------------------------------------------------------------------
+
+int logJoystickValueX_1 = 0;
+int logJoystickValueY_1 = 0;
+int logJoystickValueX_2 = 0;
+int logJoystickValueY_2 = 0;
 
 char buf[30];
 
-int message[6];
+int message[4];
 
 // 0번과 1번으로 송수신을 결정
 // 수신 아두이노는 0으로, 송신 아두이노는 1로 설정하고 컴파일
@@ -51,9 +51,7 @@ void loop() {
     radio.read(message, sizeof(message));
     
     READJOYSTICK();
-    READBUTTON();
     WRITEPRINT();
-    POTENTIONMETER();
     LOG();
     
     delay(10);
@@ -61,62 +59,44 @@ void loop() {
 }
 
 void READJOYSTICK(){
-  read_joystick_x = message[0];
-  read_joystick_y = message[1];
-  joystickButtonValue = message[2];
+  read_joystick_x_1 = message[0];
+  read_joystick_y_1 = message[1];
+  read_joystick_x_2 = message[2];
+  read_joystick_y_2 = message[3];
 
-  logJoystickValueX = read_joystick_x;
-  logJoystickValueY = read_joystick_y;
-  logJoystickValueButton = joystickButtonValue;
-}
-
-void READBUTTON(){
-  buttonOneValue = message[3];
-  buttonTwoValue = message[4];
-
-  logButtonOneValue = buttonOneValue;
-  logButtonTwoValue = buttonTwoValue;
-}
-
-void POTENTIONMETER(){
-  potentionValue = message[5];
-
-  logPotentionValue = potentionValue;
+  logJoystickValueX_1 = read_joystick_x_1;
+  logJoystickValueY_1 = read_joystick_y_1;
+  logJoystickValueX_2 = read_joystick_x_2;
+  logJoystickValueY_2 = read_joystick_y_2;
 }
 
 void WRITEPRINT(){
   Unit1.print("A");
-  sprintf(buf, "%04d", read_joystick_x);
+  sprintf(buf, "%04d", read_joystick_x_1);
   Unit1.print(buf);
   Unit1.print("B");
-  sprintf(buf, "%04d", read_joystick_y);
+  sprintf(buf, "%04d", read_joystick_y_1);
   Unit1.print(buf);
   Unit1.print("C");
-  sprintf(buf, "%04d", potentionValue);
+  sprintf(buf, "%04d", read_joystick_x_2);
   Unit1.print(buf);
   Unit1.print("D");
-  Unit1.print(joystickButtonValue);
-  Unit1.print("E");
-  Unit1.print(buttonOneValue);
-  Unit1.print("F");
-  Unit1.print(buttonTwoValue);
-  Unit1.println("G");
+  sprintf(buf, "%04d", read_joystick_y_2);
+  Unit1.print(buf);
+  Unit1.println("E");
 }
 
 void LOG(){
-  sprintf(buf, "%04d", logJoystickValueX);
+  sprintf(buf, "%04d", logJoystickValueX_1);
   Serial.print(buf);
   Serial.print("A");
-  sprintf(buf, "%04d", logJoystickValueY);
+  sprintf(buf, "%04d", logJoystickValueY_1);
   Serial.print(buf);
   Serial.print("A");
-  sprintf(buf, "%04d", potentionValue);
+  sprintf(buf, "%04d", logJoystickValueX_2);
   Serial.print(buf);
   Serial.print("A");
-  Serial.print(logJoystickValueButton);
-  Serial.print("A");
-  Serial.print(buttonOneValue);
-  Serial.print("A");
-  Serial.print(buttonTwoValue);
+  sprintf(buf, "%04d", logJoystickValueY_2);
+  Serial.print(buf);
   Serial.println("A");
 }
