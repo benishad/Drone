@@ -1,6 +1,6 @@
 <style>
 .custom-image {
-  width: 500;
+  width: 200;
   height: auto;
 }
 </style>
