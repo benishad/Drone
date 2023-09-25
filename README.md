@@ -1,6 +1,5 @@
 ## ✈️드론의 비행 거리를 늘려보자[중계 통신 드론 프로젝트]
-![메인_사진](./img/메인드론%20사진.jpg)
-<img src="/img/메인드론 사진.jpg" alt="image" width="300" height="auto">
+<img src="/img/메인드론 사진.jpg" alt="image" width="500" height="auto">
 
 ## 중계 통신 드론이란?
 
