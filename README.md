@@ -70,17 +70,17 @@
     ESP32와 아두이노 보드 전원공급을 드론 배터리로 해결 합니다. 따라서 드론의 14.8V 혹은 다른 용량의 배터리 전압을 낮춰줄 필요가 있습니다. 위 회로에서는 9V로 정하였지만 **사용하는 보드에 입력 전압을 숙지하고 그에 맞춰서 조정**하길 바랍니다.
   <br>
   <br>
-  배터리 전원은 ESC, ESP32, 아두이노 등으로 전달 되어야 하기에 적절한 분배 장비를 이용해야 합니다.
+  배터리 전원은 ESC, ESP32, 아두이노 등으로 전달 되어야 하기에 적절한 분배 장비를 이용해야 합니다.<br><br>
   
-    >1.전원 분배 보드
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 전원 분배 보드
 
-    <img src="/img/전원분배보드.jpg" alt="image" width="250" height="auto">
+<img src="/img/전원분배보드.jpg" alt="image" width="250" height="auto">
 
-    >2.바디 전원 분배
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 바디 전원 분배
 
-    <img src="/img/전원분배보드2.jpg" alt="image" width="250" height="auto">
+<img src="/img/전원분배보드2.jpg" alt="image" width="250" height="auto">
 
-    >기타 등등...
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 기타 등등...
 
   - ### 전압 조정
     전압 조정 방법 또한 여러 방법이 있습니다.
