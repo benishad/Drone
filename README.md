@@ -72,15 +72,15 @@
   <br>
   배터리 전원은 ESC, ESP32, 아두이노 등으로 전달 되어야 하기에 적절한 분배 장비를 이용해야 합니다.
   
-     - 1.전원 분배 보드<br>
+    >1.전원 분배 보드
 
-     <img src="/img/전원분배보드.jpg" alt="image" width="250" height="auto">
+    <img src="/img/전원분배보드.jpg" alt="image" width="250" height="auto">
 
-      - 2.바디 전원 분배<br>
+    >2.바디 전원 분배
 
-     <img src="/img/전원분배보드2.jpg" alt="image" width="250" height="auto">
-     
-     - 3.기타 등등...
+    <img src="/img/전원분배보드2.jpg" alt="image" width="250" height="auto">
+
+    >기타 등등...
 
   - ### 전압 조정
     전압 조정 방법 또한 여러 방법이 있습니다.
