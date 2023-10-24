@@ -6,7 +6,8 @@
 #define RXp1 3    //esp32 uart통신을 위한 핀
 #define TXp1 1    //esp32 uart통신을 위한 핀
 
-long long pipeIn = 0x1324ABCDEFLL;   //주소값 설정
+//long long pipeIn = 0x1324ABCDEFLL;   //주소값 설정
+const uint64_t pipeIn = 0xABCD1234567890EFLL;
 
 char buf[18]; //  
 
@@ -27,6 +28,10 @@ void setup() {
   //Serial.begin(115200);
   Serial1.begin(115200, SERIAL_8N1, RXp1, TXp1);    //메인드론 esp32로 보내기 위한 시리얼 
   radio.begin();
+  //radio.setDataRate(RF24_250KBPS);
+  // RF24_250KBPS, RF24_1MBPS, RF24_2MBPS
+  //radio.setPALevel(RF24_PA_HIGH);
+  //거리가 가까운 순으로 RF24_PA_MIN / RF24_PA_LOW / RF24_PA_HIGH / RF24_PA_MAX 등으로 설정
   radio.openReadingPipe(1, pipeIn); // Set the same address used in the transmitter
   radio.startListening();
 }
