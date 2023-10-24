@@ -3,7 +3,9 @@
 #include <RF24.h>
 
 //const uint64_t pipeOut = 0xE8E8F0F0E1LL;
-long long pipeOut = 0x1324ABCDEFLL;   //주소값 설정
+//long long pipeOut = 0x1324ABCDEFLL;   //주소값 설정
+const uint64_t pipeOut = 0xABCD1234567890EFLL;
+
 
 RF24 radio(4, 5); // GPIO18 for CE, GPIO5 for CSN , 4번 ce 5번 csn
 
@@ -34,6 +36,9 @@ void setup()
   radio.begin();
   //radio.setAutoAck(false);
   //radio.setDataRate(RF24_250KBPS);
+  // RF24_250KBPS, RF24_1MBPS, RF24_2MBPS
+  //radio.setPALevel(RF24_PA_HIGH);
+  //거리가 가까운 순으로 RF24_PA_MIN / RF24_PA_LOW / RF24_PA_HIGH / RF24_PA_MAX 등으로 설정
   radio.openWritingPipe(pipeOut);
   radio.stopListening(); // Listening을 멈춤
   resetData();
