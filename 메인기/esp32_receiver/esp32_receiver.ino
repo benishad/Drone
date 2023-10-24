@@ -1,3 +1,4 @@
+//메인 드론
 //중계통신으로 받은 값으로 작동하는 메인 드론 ESP32.
 //받은 값을 처리하여 다시 나노로 전송하는 역할을 한다.
 #include <SPI.h>
@@ -6,7 +7,8 @@
 #define RXp2 16   //uart통신을 위한 핀
 #define TXp2 17   //uart통신을 위한 핀
 
-long long pipeIn = 0x1234ABCDEFLL;   //주소값 설정
+//long long pipeIn = 0x1234ABCDEFLL;   //주소값 설정
+const uint64_t pipeIn = 0x5A1B2C3D4E5F6A7BLL;
 
 char buf[30]; //  
 
@@ -29,6 +31,9 @@ void setup() {
   radio.begin();
   radio.openReadingPipe(1, pipeIn); // Set the same address used in the transmitter
   radio.setDataRate(RF24_2MBPS);  // 데이터 전송 속도 설정
+  // RF24_250KBPS, RF24_1MBPS, RF24_2MBPS
+  //radio.setPALevel(RF24_PA_HIGH);
+  //거리가 가까운 순으로 RF24_PA_MIN / RF24_PA_LOW / RF24_PA_HIGH / RF24_PA_MAX 등으로 설정
   radio.startListening();
 }
 
