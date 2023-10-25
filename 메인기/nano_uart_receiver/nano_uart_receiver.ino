@@ -80,7 +80,7 @@ void loop() {
     data.AUX1 = value.substring(17, 20).toInt();
     data.AUX2 = value.substring(21, 24).toInt();
     
-//    Serial.print("Received - Throttle: ");
+//    Serial.print("메인기 나노 => Throttle: ");
 //    Serial.print(data.throttle);
 //    Serial.print("  Yaw: ");
 //    Serial.print(data.yaw);
@@ -95,7 +95,7 @@ void loop() {
 
     setPPMValuesFromData();
 
-    Serial.print("Received - Throttle: ");
+    Serial.print("메인기 나노 => Throttle: ");
     Serial.print(ppm[0]);
     Serial.print("  Yaw: ");
     Serial.print(ppm[1]);
