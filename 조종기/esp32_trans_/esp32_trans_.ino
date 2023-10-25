@@ -16,6 +16,8 @@ struct MyData {   //전송할 데이터 구조체 생성
   byte roll;
   byte AUX1;
   byte AUX2;
+  byte AUX3;
+  byte AUX4;
 };
 
 MyData data;
@@ -28,6 +30,8 @@ void resetData()
   data.roll = 127;
   data.AUX1 = 0;
   data.AUX2 = 0;
+  data.AUX3 = 0;
+  data.AUX4 = 0;
 }
 
 void setup()
@@ -45,6 +49,8 @@ void setup()
 
   pinMode(33, INPUT);
   pinMode(32, INPUT);
+  pinMode(25, INPUT);
+  pinMode(26, INPUT);
 }
 
 /**************************************************/
@@ -61,16 +67,19 @@ int mapJoystickValues(int val, int lower, int middle, int upper, bool reverse)
 
 void loop()
 {
-  data.throttle = mapJoystickValues(analogRead(34), 80, 1850, 4050, true);//34
-  data.yaw      = mapJoystickValues(analogRead(14), 0, 2045, 4095, true);//35
-  data.pitch    = mapJoystickValues(analogRead(15), 0, 1765, 4095, true);//32
-  data.roll     = mapJoystickValues(analogRead(35), 0, 2045, 4095, false);//33
-  data.AUX1     = digitalRead(32);//26
-  data.AUX2     = digitalRead(33);//25
+  data.throttle = mapJoystickValues(analogRead(34), 80, 1850, 4050, true);
+  data.yaw      = mapJoystickValues(analogRead(14), 0, 2045, 4095, true);
+  data.pitch    = mapJoystickValues(analogRead(15), 0, 1765, 4095, true);
+  data.roll     = mapJoystickValues(analogRead(35), 0, 2045, 4095, false);
+  data.AUX1     = digitalRead(32);
+  data.AUX2     = digitalRead(33);
+  data.AUX3     = digitalRead(25);
+  data.AUX4     = digitalRead(26);
 
   radio.write(&data, sizeof(MyData));
 
 //   송신하는 값을 시리얼 모니터에 출력
+Serial.print("조종기 => ");
   Serial.print("Throttle: ");
   Serial.print(data.throttle);
   Serial.print("  Yaw: ");
@@ -82,7 +91,11 @@ void loop()
   Serial.print("  AUX1: ");
   Serial.print(data.AUX1);
   Serial.print("  AUX2: ");
-  Serial.println(data.AUX2);
+  Serial.print(data.AUX2);
+  Serial.print("  AUX3: ");
+  Serial.print(data.AUX3);
+  Serial.print("  AUX4: ");
+  Serial.println(data.AUX4);
 
   //delay(100); // 일정 시간 간격으로 송신 (500ms = 0.5초)
 }

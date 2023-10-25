@@ -21,6 +21,8 @@ struct MyData {
   byte roll;
   byte AUX1;
   byte AUX2;
+  byte AUX3;
+  byte AUX4;
 };
 
 MyData receivedData;
@@ -41,7 +43,7 @@ void loop() {
   if (radio.available()) {
     radio.read(&receivedData, sizeof(MyData));
 
-    Serial.print("Received - Throttle: ");
+    Serial.print("메인기 =>  Throttle: ");
     Serial.print(receivedData.throttle);
     Serial.print("  Yaw: ");
     Serial.print(receivedData.yaw);
@@ -52,7 +54,11 @@ void loop() {
     Serial.print("  AUX1: ");
     Serial.print(receivedData.AUX1);
     Serial.print("  AUX2: ");
-    Serial.println(receivedData.AUX2);
+    Serial.print(receivedData.AUX2);
+    Serial.print("  AUX3: ");
+    Serial.print(receivedData.AUX3);
+    Serial.print("  AUX4: ");
+    Serial.println(receivedData.AUX4);
 
     Serial2.print("A");
     sprintf(buf, "%03d", receivedData.throttle);

@@ -19,6 +19,8 @@ struct MyData {   //전송할 데이터 구조체 생성
   byte roll;
   byte AUX1;
   byte AUX2;
+  byte AUX3;
+  byte AUX4;
 };
 
 struct TestValue
@@ -29,6 +31,8 @@ struct TestValue
   String test_roll;
   String test_AUX1;
   String test_AUX2;
+  String test_AUX3;
+  String test_AUX4;
 };
 
 
@@ -44,6 +48,8 @@ void resetData()
   data.roll = 127;
   data.AUX1 = 0;
   data.AUX2 = 0;
+  data.AUX3 = 0;
+  data.AUX4 = 0;
 }
 
 void setup()
@@ -72,7 +78,7 @@ void serial_event() {
     String inString = Serial2.readStringUntil('\n');
 
      // 데이터 길이 확인
-    if(inString.length() == 26)
+    if(inString.length() == 34)
     {
       test.test_throttle = inString.substring(1, 4);    //받은 스트링 값을 분할 후 인티져로 변환하여 저장
       test.test_yaw = inString.substring(5, 8);
@@ -80,6 +86,8 @@ void serial_event() {
       test.test_roll = inString.substring(13, 16);
       test.test_AUX1 = inString.substring(17, 20);
       test.test_AUX2 = inString.substring(21, 24);
+      test.test_AUX3 = inString.substring(25, 28);
+      test.test_AUX4 = inString.substring(29, 32);
       
       data.throttle = test.test_throttle.toInt();    //받은 스트링 값을 분할 후 인티져로 변환하여 저장
       data.yaw = test.test_yaw.toInt();
@@ -87,6 +95,8 @@ void serial_event() {
       data.roll = test.test_roll.toInt();
       data.AUX1 = test.test_AUX1.toInt();
       data.AUX2 = test.test_AUX2.toInt();
+      data.AUX3 = test.test_AUX3.toInt();
+      data.AUX4 = test.test_AUX4.toInt();
       
       serial_print();
       radio.write(&data, sizeof(MyData));
@@ -97,17 +107,22 @@ void serial_event() {
 }
 
 void serial_print()
-{ 
-    Serial2.print("Throttle: ");
-    Serial2.print(data.throttle);
-    Serial2.print("  Yaw: ");
-    Serial2.print(data.yaw);
-    Serial2.print("  Pitch: ");
-    Serial2.print(data.pitch);
-    Serial2.print("  Roll: ");
-    Serial2.print(data.roll);
-    Serial2.print("  AUX1: ");
-    Serial2.print(data.AUX1);
-    Serial2.print("  AUX2: ");
-    Serial2.println(data.AUX2); 
+{
+  Serial2.print("중계기 2 => ");
+  Serial2.print("Throttle: ");
+  Serial2.print(data.throttle);
+  Serial2.print("  Yaw: ");
+  Serial2.print(data.yaw);
+  Serial2.print("  Pitch: ");
+  Serial2.print(data.pitch);
+  Serial2.print("  Roll: ");
+  Serial2.print(data.roll);
+  Serial2.print("  AUX1: ");
+  Serial2.print(data.AUX1);
+  Serial2.print("  AUX2: ");
+  Serial2.print(data.AUX2);
+  Serial2.print("  AUX3: ");
+  Serial2.print(data.AUX3); 
+  Serial2.print("  AUX4: ");
+  Serial2.println(data.AUX4); 
 }

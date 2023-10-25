@@ -9,7 +9,7 @@
 //long long pipeIn = 0x1324ABCDEFLL;   //주소값 설정
 const uint64_t pipeIn = 0xABCD1234567890EFLL;
 
-char buf[18]; //  
+char buf[24]; //  
 
 RF24 radio(4, 5); // GPIO18 for CE, GPIO5 for CSN
 
@@ -20,6 +20,8 @@ struct MyData {
   byte roll;
   byte AUX1;
   byte AUX2;
+  byte AUX3;
+  byte AUX4;
 };
 
 MyData receivedData;
@@ -76,7 +78,13 @@ void loop() {
     Serial1.print("F");
     sprintf(buf, "%03d", receivedData.AUX2);
     Serial1.print(buf);
-    Serial1.println("G");
+    Serial1.print("G");
+    sprintf(buf, "%03d", receivedData.AUX3);
+    Serial1.print(buf);
+    Serial1.print("H");
+    sprintf(buf, "%03d", receivedData.AUX4);
+    Serial1.print(buf);
+    Serial1.println("I");
 
     delay(10);
   }
