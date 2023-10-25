@@ -5,11 +5,14 @@
 
 #define RXp1 3    //esp32 uart통신을 위한 핀
 #define TXp1 1    //esp32 uart통신을 위한 핀
+#define RXp2 16   // 아두이노 나노 uart 통신을 위한 핀
+#define TXp2 17   // 아두이노 나노 uart 통신을 위한 핀
 
 //long long pipeIn = 0x1324ABCDEFLL;   //주소값 설정
 const uint64_t pipeIn = 0xABCD1234567890EFLL;
 
-char buf[24]; //  
+char buf[24]; //
+char nanobuf[18];
 
 RF24 radio(4, 5); // GPIO18 for CE, GPIO5 for CSN
 
@@ -26,9 +29,21 @@ struct MyData {
 
 MyData receivedData;
 
+struct NanoData {
+  byte throttle;
+  byte yaw;
+  byte pitch;
+  byte roll;
+  byte AUX1;
+  byte AUX2;
+
+};
+
+NanoData transData;
+
 void setup() {
-  //Serial.begin(115200);
   Serial1.begin(115200, SERIAL_8N1, RXp1, TXp1);    //메인드론 esp32로 보내기 위한 시리얼 
+  Serial2.begin(9600, SERIAL_8N1, RXp2, TXp2);    // 아두이노 나노와 uart 통신을 위한 시리얼
   radio.begin();
   //radio.setDataRate(RF24_250KBPS);
   // RF24_250KBPS, RF24_1MBPS, RF24_2MBPS
@@ -44,7 +59,7 @@ void loop() {
     radio.read(&receivedData, sizeof(MyData));
 
     /*
-    Serial.print("Received - Throttle: ");
+    Serial.print("중계기 1 => Throttle: ");
     Serial.print(receivedData.throttle);
     Serial.print("  Yaw: ");
     Serial.print(receivedData.yaw);
@@ -86,6 +101,27 @@ void loop() {
     Serial1.print(buf);
     Serial1.println("I");
 
+     // 아두이노 나노로 보내는 uart 통신 부분
+    Serial2.print("G");
+    sprintf(nanobuf, "%03d", transData.throttle);
+    Serial2.print(nanobuf);
+    Serial2.print("F");
+    sprintf(nanobuf, "%03d", transData.yaw);
+    Serial2.print(nanobuf);
+    Serial2.print("E");
+    sprintf(nanobuf, "%03d", transData.pitch);
+    Serial2.print(nanobuf);
+    Serial2.print("D");
+    sprintf(nanobuf, "%03d", transData.roll);
+    Serial2.print(nanobuf);
+    Serial2.print("C");
+    sprintf(nanobuf, "%03d", transData.AUX1);
+    Serial2.print(nanobuf);
+    Serial2.print("B");
+    sprintf(nanobuf, "%03d", transData.AUX2);
+    Serial2.print(nanobuf);
+    Serial2.println("A");
+    
     delay(10);
   }
 }
