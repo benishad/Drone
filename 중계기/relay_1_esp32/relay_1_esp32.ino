@@ -103,22 +103,22 @@ void loop() {
 
      // 아두이노 나노로 보내는 uart 통신 부분
     Serial2.print("G");
-    sprintf(nanobuf, "%03d", transData.throttle);
+    sprintf(nanobuf, "%03d", receivedData.throttle);
     Serial2.print(nanobuf);
     Serial2.print("F");
-    sprintf(nanobuf, "%03d", transData.yaw);
+    sprintf(nanobuf, "%03d", receivedData.yaw);
     Serial2.print(nanobuf);
     Serial2.print("E");
-    sprintf(nanobuf, "%03d", transData.pitch);
+    sprintf(nanobuf, "%03d", receivedData.pitch);
     Serial2.print(nanobuf);
     Serial2.print("D");
-    sprintf(nanobuf, "%03d", transData.roll);
+    sprintf(nanobuf, "%03d", receivedData.roll);
     Serial2.print(nanobuf);
     Serial2.print("C");
-    sprintf(nanobuf, "%03d", transData.AUX1);
+    sprintf(nanobuf, "%03d", receivedData.AUX1);
     Serial2.print(nanobuf);
     Serial2.print("B");
-    sprintf(nanobuf, "%03d", transData.AUX2);
+    sprintf(nanobuf, "%03d", receivedData.AUX2);
     Serial2.print(nanobuf);
     Serial2.println("A");
     
