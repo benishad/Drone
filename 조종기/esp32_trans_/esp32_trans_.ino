@@ -67,10 +67,10 @@ int mapJoystickValues(int val, int lower, int middle, int upper, bool reverse)
 
 void loop()
 {
-  data.throttle = mapJoystickValues(analogRead(34), 80, 1850, 4050, true);
-  data.yaw      = mapJoystickValues(analogRead(14), 0, 2045, 4095, true);
-  data.pitch    = mapJoystickValues(analogRead(15), 0, 1765, 4095, true);
-  data.roll     = mapJoystickValues(analogRead(35), 0, 2045, 4095, false);
+  data.throttle = mapJoystickValues(analogRead(34), 50, 1850, 3800, true);
+  data.yaw      = mapJoystickValues(analogRead(14), 5, 2080, 4095, true);
+  data.pitch    = mapJoystickValues(analogRead(15), 80, 1750, 4095, true);
+  data.roll     = mapJoystickValues(analogRead(35), 0, 2060, 4095, false);
   data.AUX1     = digitalRead(32);
   data.AUX2     = digitalRead(33);
   data.AUX3     = digitalRead(25);
