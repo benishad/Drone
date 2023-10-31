@@ -61,7 +61,7 @@ void setupPPM() {
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(115200);   //esp32 Serial2에서 사용한 보드레이트와 같게 맞춤
+  Serial.begin(9600);   //esp32 Serial2에서 사용한 보드레이트와 같게 맞춤
 
   resetData();
   setupPPM();

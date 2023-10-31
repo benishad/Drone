@@ -14,6 +14,19 @@ char buf[30]; //
 
 RF24 radio(4, 5); // GPIO18 for CE, GPIO5 for CSN
 
+bool communicationActive = true;  // 통신 활성화 상태
+unsigned long lastCommunicationTime = 0;
+unsigned long communicationTimeout = 5000;  // 통신 타임아웃 시간 (5초)
+
+// 안전한 착지를 위한 Roll, Pitch, Yaw 값
+const byte safeRoll = 128;
+const byte safePitch = 128;
+const byte safeYaw = 128;
+const byte safeAUX1 = 000;
+const byte safeAUX2 = 001;
+const byte safeAUX3 = 000;
+const byte safeAUX4 = 000;
+
 struct MyData {
   byte throttle;
   byte yaw;
@@ -42,6 +55,7 @@ void setup() {
 void loop() {
   if (radio.available()) {
     radio.read(&receivedData, sizeof(MyData));
+    lastCommunicationTime = millis();  // 통신이 성공한 경우 타임아웃 타이머 재설정
 
     Serial.print("메인기 =>  Throttle: ");
     Serial.print(receivedData.throttle);
@@ -80,6 +94,37 @@ void loop() {
     Serial2.print(buf);
     Serial2.println("G");
 
+    communicationActive = true;
     delay(10);
+  }
+  //안전모드 동작부분
+  else 
+  {
+    // 통신이 끊겼을 때의 동작
+    if (communicationActive && (millis() - lastCommunicationTime >= communicationTimeout)) 
+    {
+      communicationActive = false;  // 통신 끊김 상태로 설정
+      // 스로틀 값을 천천히 감소시켜 안전한 착지 모사
+      for (int throttleValue = receivedData.throttle; throttleValue >= 0; throttleValue -= 2) 
+      {
+        Serial2.print("A");
+        sprintf(buf, "%03d", throttleValue);
+        Serial2.print(buf);
+        Serial2.print("B");
+        Serial2.print(safeYaw);  // 안전한 Yaw 값
+        Serial2.print("C");
+        Serial2.print(safePitch);  // 안전한 Pitch 값
+        Serial2.print("D");
+        Serial2.print(safeRoll);  // 안전한 Roll 값
+        Serial2.print("E");
+        sprintf(buf, "%03d", safeAUX1);
+        Serial2.print(buf);
+        Serial2.print("F");
+        sprintf(buf, "%03d", safeAUX2);
+        Serial2.print(buf);
+        Serial2.println("G");
+        delay(750);  // 100ms 간격으로 스로틀 값을 감소시킴
+      }
+    }
   }
 }

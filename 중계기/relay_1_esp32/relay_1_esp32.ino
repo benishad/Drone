@@ -2,17 +2,15 @@
 //라디오 통신으로 받은 값을 처리하여 중계2번 esp32로 uart전송한다.
 #include <SPI.h>
 #include <RF24.h>
+HardwareSerial esp32_Serial(0);
 
 #define RXp1 3    //esp32 uart통신을 위한 핀
 #define TXp1 1    //esp32 uart통신을 위한 핀
-#define RXp2 16   // 아두이노 나노 uart 통신을 위한 핀
-#define TXp2 17   // 아두이노 나노 uart 통신을 위한 핀
 
 //long long pipeIn = 0x1324ABCDEFLL;   //주소값 설정
 const uint64_t pipeIn = 0xABCD1234567890EFLL;
 
 char buf[24]; //
-char nanobuf[18];
 
 RF24 radio(4, 5); // GPIO18 for CE, GPIO5 for CSN
 
@@ -29,21 +27,21 @@ struct MyData {
 
 MyData receivedData;
 
-struct NanoData {
-  byte throttle;
-  byte yaw;
-  byte pitch;
-  byte roll;
-  byte AUX1;
-  byte AUX2;
+bool communicationActive = true;  // 통신 활성화 상태
+unsigned long lastCommunicationTime = 0;
+unsigned long communicationTimeout = 5000;  // 통신 타임아웃 시간 (5초)
 
-};
-
-NanoData transData;
+// 안전한 착지를 위한 Roll, Pitch, Yaw 값
+const byte safeRoll = 128;
+const byte safePitch = 128;
+const byte safeYaw = 128;
+const byte safeAUX1 = 000;
+const byte safeAUX2 = 001;
+const byte safeAUX3 = 000;
+const byte safeAUX4 = 000;
 
 void setup() {
-  Serial1.begin(115200, SERIAL_8N1, RXp1, TXp1);    //메인드론 esp32로 보내기 위한 시리얼 
-  Serial2.begin(9600, SERIAL_8N1, RXp2, TXp2);    // 아두이노 나노와 uart 통신을 위한 시리얼
+  esp32_Serial.begin(115200, SERIAL_8N1, RXp1, TXp1);    //메인드론 esp32로 보내기 위한 시리얼 
   radio.begin();
   //radio.setDataRate(RF24_250KBPS);
   // RF24_250KBPS, RF24_1MBPS, RF24_2MBPS
@@ -53,75 +51,77 @@ void setup() {
   radio.startListening();
 }
 
-void loop() { 
+void loop() 
+{ 
   if(radio.available()) 
   {
     radio.read(&receivedData, sizeof(MyData));
+    lastCommunicationTime = millis();  // 통신이 성공한 경우 타임아웃 타이머 재설정
 
-    /*
-    Serial.print("중계기 1 => Throttle: ");
-    Serial.print(receivedData.throttle);
-    Serial.print("  Yaw: ");
-    Serial.print(receivedData.yaw);
-    Serial.print("  Pitch: ");
-    Serial.print(receivedData.pitch);
-    Serial.print("  Roll: ");
-    Serial.print(receivedData.roll);
-    Serial.print("  AUX1: ");
-    Serial.print(receivedData.AUX1);
-    Serial.print("  AUX2: ");
-    Serial.println(receivedData.AUX2);
-    */
-
-    
     //esp32로 보내는 uart통신 부분
-    Serial1.print("A");
+    esp32_Serial.print("A");
     sprintf(buf, "%03d", receivedData.throttle);
-    Serial1.print(buf);
-    Serial1.print("B");
+    esp32_Serial.print(buf);
+    esp32_Serial.print("B");
     sprintf(buf, "%03d", receivedData.yaw);
-    Serial1.print(buf);
-    Serial1.print("C");
+    esp32_Serial.print(buf);
+    esp32_Serial.print("C");
     sprintf(buf, "%03d", receivedData.pitch);
-    Serial1.print(buf);
-    Serial1.print("D");
+    esp32_Serial.print(buf);
+    esp32_Serial.print("D");
     sprintf(buf, "%03d", receivedData.roll);
-    Serial1.print(buf);
-    Serial1.print("E");
+    esp32_Serial.print(buf);
+    esp32_Serial.print("E");
     sprintf(buf, "%03d", receivedData.AUX1);
-    Serial1.print(buf);
-    Serial1.print("F");
+    esp32_Serial.print(buf);
+    esp32_Serial.print("F");
     sprintf(buf, "%03d", receivedData.AUX2);
-    Serial1.print(buf);
-    Serial1.print("G");
+    esp32_Serial.print(buf);
+    esp32_Serial.print("G");
     sprintf(buf, "%03d", receivedData.AUX3);
-    Serial1.print(buf);
-    Serial1.print("H");
+    esp32_Serial.print(buf);
+    esp32_Serial.print("H");
     sprintf(buf, "%03d", receivedData.AUX4);
-    Serial1.print(buf);
-    Serial1.println("I");
+    esp32_Serial.print(buf);
+    esp32_Serial.println("I");
 
-     // 아두이노 나노로 보내는 uart 통신 부분
-    Serial2.print("G");
-    sprintf(nanobuf, "%03d", receivedData.throttle);
-    Serial2.print(nanobuf);
-    Serial2.print("F");
-    sprintf(nanobuf, "%03d", receivedData.yaw);
-    Serial2.print(nanobuf);
-    Serial2.print("E");
-    sprintf(nanobuf, "%03d", receivedData.pitch);
-    Serial2.print(nanobuf);
-    Serial2.print("D");
-    sprintf(nanobuf, "%03d", receivedData.roll);
-    Serial2.print(nanobuf);
-    Serial2.print("C");
-    sprintf(nanobuf, "%03d", receivedData.AUX1);
-    Serial2.print(nanobuf);
-    Serial2.print("B");
-    sprintf(nanobuf, "%03d", receivedData.AUX2);
-    Serial2.print(nanobuf);
-    Serial2.println("A");
-    
+    // 통신이 활성화된 상태로 설정
+    communicationActive = true;
     delay(10);
+  }
+  else 
+  {
+    // 통신이 끊겼을 때의 동작
+    if (communicationActive && (millis() - lastCommunicationTime >= communicationTimeout)) 
+    {
+      communicationActive = false;  // 통신 끊김 상태로 설정
+      // 스로틀 값을 천천히 감소시켜 안전한 착지 모사
+      for (int throttleValue = receivedData.throttle; throttleValue >= 0; throttleValue -= 2) 
+      {
+        esp32_Serial.print("A");
+        sprintf(buf, "%03d", throttleValue);
+        esp32_Serial.print(buf);
+        esp32_Serial.print("B");
+        esp32_Serial.print(safeYaw);  // 안전한 Yaw 값
+        esp32_Serial.print("C");
+        esp32_Serial.print(safePitch);  // 안전한 Pitch 값
+        esp32_Serial.print("D");
+        esp32_Serial.print(safeRoll);  // 안전한 Roll 값
+        esp32_Serial.print("E");
+        sprintf(buf, "%03d", safeAUX1);
+        esp32_Serial.print(buf);
+        esp32_Serial.print("F");
+        sprintf(buf, "%03d", safeAUX2);
+        esp32_Serial.print(buf);
+        esp32_Serial.print("G");
+        sprintf(buf, "%03d", safeAUX3);
+        esp32_Serial.print(buf);
+        esp32_Serial.print("H");
+        sprintf(buf, "%03d", safeAUX4);
+        esp32_Serial.print(buf);
+        esp32_Serial.println("I");
+        delay(750);  // 100ms 간격으로 스로틀 값을 감소시킴
+      }
+    }
   }
 }

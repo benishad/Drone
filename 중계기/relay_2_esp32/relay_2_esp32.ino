@@ -1,14 +1,19 @@
 //중계2번 esp32 드론
-//중계1번에서 받은 값을 다시 라디오 통신으로 메인 ESP32로 보내준다.
+//중계1번에서 받은 값을 나노로 보내며 다시 라디오 통신으로 메인 ESP32로 보내준다.
 #include <SPI.h>
 #include <RF24.h>
+
+HardwareSerial nano_Serial(2);
+
 #define RXp1 3    //esp32 uart통신을 위한 핀
 #define TXp1 1    //esp32 uart통신을 위한 핀
+#define RXp2 16   // 아두이노 나노 uart 통신을 위한 핀
+#define TXp2 17   // 아두이노 나노 uart 통신을 위한 핀
 
 //long long pipeOut =  0x1234ABCDEFLL;   // 여기는 주소값이 바껴야 혼선이 없음
 const uint64_t pipeOut = 0x5A1B2C3D4E5F6A7BLL;
 
-String buffer = "";
+char buf[24];
 
 RF24 radio(4, 5); // GPIO18 for CE, GPIO5 for CSN , 4번 ce 5번 csn
 
@@ -54,7 +59,8 @@ void resetData()
 
 void setup()
 {
-  Serial2.begin(115200, SERIAL_8N1, RXp1, TXp1);
+  Serial1.begin(9600, SERIAL_8N1, RXp2, TXp2); //나노와 통신하는 시리얼
+  Serial2.begin(115200, SERIAL_8N1, RXp1, TXp1); // 중계1과 통신하는 시리얼 
   radio.begin();
   radio.openWritingPipe(pipeOut);
   radio.setDataRate(RF24_2MBPS);  // 데이터 전송 속도 설정
@@ -72,6 +78,7 @@ void loop() {
   delay(10);
 }
 
+// 조이스티값 나누고 정수형으로 전환
 void serial_event() {
   if(Serial2.available()>0)
   {
@@ -99,13 +106,16 @@ void serial_event() {
       data.AUX4 = test.test_AUX4.toInt();
       
       serial_print();
+      nano();
       radio.write(&data, sizeof(MyData));
+      
     }
     else
       Serial2.println("error");
   }
 }
 
+// 들어오는 데이터 맵핑값 출력함수
 void serial_print()
 {
   Serial2.print("중계기 2 => ");
@@ -125,4 +135,29 @@ void serial_print()
   Serial2.print(data.AUX3); 
   Serial2.print("  AUX4: ");
   Serial2.println(data.AUX4); 
+}
+
+// 중계 나노로보내는 데이터값 전송함수
+void nano(){
+  Serial1.print("A");
+  sprintf(buf, "%03d", data.throttle);
+  Serial1.print(buf);
+  Serial1.print("B");
+  sprintf(buf, "%03d", data.yaw);
+  Serial1.print(buf);
+  Serial1.print("C");
+  sprintf(buf, "%03d", data.pitch);
+  Serial1.print(buf);
+  Serial1.print("D");
+  sprintf(buf, "%03d", data.roll);
+  Serial1.print(buf);
+  Serial1.print("E");
+  sprintf(buf, "%03d", data.AUX1);
+  Serial1.print(buf);
+  Serial1.print("F");
+  sprintf(buf, "%03d", data.AUX2);
+  Serial1.print(buf);
+  Serial1.println("G");
+  
+  delay(10);
 }
