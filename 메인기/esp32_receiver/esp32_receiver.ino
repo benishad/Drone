@@ -40,6 +40,8 @@ struct MyData {
 
 MyData receivedData;
 
+MyData lastData;  // 마지막으로 받은 데이터를 저장할 변수
+
 void setup() {
   Serial.begin(115200);
   Serial2.begin(115200, SERIAL_8N1, RXp2, TXp2);    //Atmega와 uart통신을 위한 시리얼
@@ -74,25 +76,15 @@ void loop() {
     Serial.print("  AUX4: ");
     Serial.println(receivedData.AUX4);
 
-    Serial2.print("A");
-    sprintf(buf, "%03d", receivedData.throttle);
-    Serial2.print(buf);
-    Serial2.print("B");
-    sprintf(buf, "%03d", receivedData.yaw);
-    Serial2.print(buf);
-    Serial2.print("C");
-    sprintf(buf, "%03d", receivedData.pitch);
-    Serial2.print(buf);
-    Serial2.print("D");
-    sprintf(buf, "%03d", receivedData.roll);
-    Serial2.print(buf);
-    Serial2.print("E");
-    sprintf(buf, "%03d", receivedData.AUX1);
-    Serial2.print(buf);
-    Serial2.print("F");
-    sprintf(buf, "%03d", receivedData.AUX2);
-    Serial2.print(buf);
-    Serial2.println("G");
+    if(receivedData.AUX4 == 1) // AUX4 값이 1이면 마지막 데이터 저장
+    {
+      lastData = receivedData;
+      sendToNano(lastData);  // 나노로 마지막 데이터 전송
+    }
+    else if(receivedData.AUX4 == 0) // AUX4 값이 0이면 현재 데이터를 나노로 전송
+    {
+      sendToNano(receivedData);
+    }
 
     communicationActive = true;
     delay(10);
@@ -127,4 +119,26 @@ void loop() {
       }
     }
   }
+}
+
+void sendToNano(MyData data) {
+    Serial2.print("A");
+    sprintf(buf, "%03d", data.throttle);
+    Serial2.print(buf);
+    Serial2.print("B");
+    sprintf(buf, "%03d", data.yaw);
+    Serial2.print(buf);
+    Serial2.print("C");
+    sprintf(buf, "%03d", data.pitch);
+    Serial2.print(buf);
+    Serial2.print("D");
+    sprintf(buf, "%03d", data.roll);
+    Serial2.print(buf);
+    Serial2.print("E");
+    sprintf(buf, "%03d", data.AUX1);
+    Serial2.print(buf);
+    Serial2.print("F");
+    sprintf(buf, "%03d", data.AUX2);
+    Serial2.print(buf);
+    Serial2.println("G");
 }

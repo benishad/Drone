@@ -43,6 +43,8 @@ struct TestValue
 
 MyData data;
 
+MyData lastData;  // 마지막으로 받은 데이터를 저장할 변수
+
 TestValue test;
 
 void resetData() 
@@ -104,9 +106,19 @@ void serial_event() {
       data.AUX2 = test.test_AUX2.toInt();
       data.AUX3 = test.test_AUX3.toInt();
       data.AUX4 = test.test_AUX4.toInt();
+
+      if(data.AUX3 == 1)  // AUX3 값이 1이면 마지막 데이터 저장
+      {
+        lastData = data;
+        nano(lastData);  // 나노로 마지막 데이터 전송
+      }
+      else if(data.AUX3 == 0) // AUX3 값이 0이면 현재 데이터를 나노로 전송
+      {
+        nano(data); //라디오와 같은 데이터 전송
+      }
       
       serial_print();
-      nano();
+//      nano();
       radio.write(&data, sizeof(MyData));
       
     }
@@ -137,25 +149,25 @@ void serial_print()
   Serial2.println(data.AUX4); 
 }
 
-// 중계 나노로보내는 데이터값 전송함수
-void nano(){
+// 중계 나노로 보내는 데이터값 전송함수
+void nano(MyData sendData){
   Serial1.print("A");
-  sprintf(buf, "%03d", data.throttle);
+  sprintf(buf, "%03d", sendData.throttle);
   Serial1.print(buf);
   Serial1.print("B");
-  sprintf(buf, "%03d", data.yaw);
+  sprintf(buf, "%03d", sendData.yaw);
   Serial1.print(buf);
   Serial1.print("C");
-  sprintf(buf, "%03d", data.pitch);
+  sprintf(buf, "%03d", sendData.pitch);
   Serial1.print(buf);
   Serial1.print("D");
-  sprintf(buf, "%03d", data.roll);
+  sprintf(buf, "%03d", sendData.roll);
   Serial1.print(buf);
   Serial1.print("E");
-  sprintf(buf, "%03d", data.AUX1);
+  sprintf(buf, "%03d", sendData.AUX1);
   Serial1.print(buf);
   Serial1.print("F");
-  sprintf(buf, "%03d", data.AUX2);
+  sprintf(buf, "%03d", sendData.AUX2);
   Serial1.print(buf);
   Serial1.println("G");
   
