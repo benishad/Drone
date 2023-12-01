@@ -7,13 +7,13 @@
 #define PPM_FrLen 27000  //set the PPM frame length in microseconds (1ms = 1000µs)
 #define PPM_PulseLen 400  //set the pulse length
 //////////////////////////////////////////////////////////////////
-
 int ppm[channel_number];
 
 unsigned long lastRecvTime = 0;
 
 
-struct MyData {
+struct MyData 
+{
   byte throttle;
   byte yaw;
   byte pitch;
@@ -65,7 +65,6 @@ void setup() {
 
   resetData();
   setupPPM();
-  
 }
 
 void loop() {
@@ -73,41 +72,43 @@ void loop() {
   {
     String value = Serial.readStringUntil('\n'); //전송 받은 값을 String으로 저장
 //    Serial.println(value);
-    data.throttle = value.substring(1, 4).toInt();    //받은 스트링 값을 분할 후 인티져로 변환하여 저장
-    data.yaw = value.substring(5, 8).toInt();
-    data.pitch = value.substring(9, 12).toInt();
-    data.roll = value.substring(13, 16).toInt();
-    data.AUX1 = value.substring(17, 20).toInt();
-    data.AUX2 = value.substring(21, 24).toInt();
+    if(value.length() == 26)
+    {
+      data.throttle = value.substring(1, 4).toInt();    //받은 스트링 값을 분할 후 인티져로 변환하여 저장
+      data.yaw = value.substring(5, 8).toInt();
+      data.pitch = value.substring(9, 12).toInt();
+      data.roll = value.substring(13, 16).toInt();
+      data.AUX1 = value.substring(17, 20).toInt();
+      data.AUX2 = value.substring(21, 24).toInt();
     
-//    Serial.print("메인기 나노 => Throttle: ");
-//    Serial.print(data.throttle);
-//    Serial.print("  Yaw: ");
-//    Serial.print(data.yaw);
-//    Serial.print("  Pitch: ");
-//    Serial.print(data.pitch);
-//    Serial.print("  Roll: ");
-//    Serial.print(data.roll);
-//    Serial.print("  AUX1: ");
-//    Serial.print(data.AUX1);
-//    Serial.print("  AUX2: ");
-//    Serial.println(data.AUX2);
+//      Serial.print("메인기 나노 => Throttle: ");
+//      Serial.print(data.throttle);
+//      Serial.print("  Yaw: ");
+//      Serial.print(data.yaw);
+//      Serial.print("  Pitch: ");
+//      Serial.print(data.pitch);
+//      Serial.print("  Roll: ");
+//      Serial.print(data.roll);
+//      Serial.print("  AUX1: ");
+//      Serial.print(data.AUX1);
+//      Serial.print("  AUX2: ");
+//      Serial.println(data.AUX2);
 
-    setPPMValuesFromData();
+      setPPMValuesFromData();
 
-    Serial.print("메인기 나노 => Throttle: ");
-    Serial.print(ppm[0]);
-    Serial.print("  Yaw: ");
-    Serial.print(ppm[1]);
-    Serial.print("  Pitch: ");
-    Serial.print(ppm[2]);
-    Serial.print("  Roll: ");
-    Serial.print(ppm[3]);
-    Serial.print("  AUX1: ");
-    Serial.print(ppm[4]);
-    Serial.print("  AUX2: ");
-    Serial.println(ppm[5]);
-    
+      Serial.print("메인기 나노 => Throttle: ");
+      Serial.print(ppm[0]);
+      Serial.print("  Yaw: ");
+      Serial.print(ppm[1]);
+      Serial.print("  Pitch: ");
+      Serial.print(ppm[2]);
+      Serial.print("  Roll: ");
+      Serial.print(ppm[3]);
+      Serial.print("  AUX1: ");
+      Serial.print(ppm[4]);
+      Serial.print("  AUX2: ");
+      Serial.println(ppm[5]);
+    }
   }
 
 }
