@@ -115,18 +115,18 @@ void loop()
       Serial.println(ppm[5]);
       
       
-      Serial.print("data => Throttle: ");
-      Serial.print(data.throttle);
-      Serial.print("  Yaw: ");
-      Serial.print(data.yaw);
-      Serial.print("  Pitch: ");
-      Serial.print(data.pitch);
-      Serial.print("  Roll: ");
-      Serial.print(data.roll);
-      Serial.print("  AUX1: ");
-      Serial.print(data.AUX1);
-      Serial.print("  AUX2: ");
-      Serial.println(data.AUX2);
+//      Serial.print("data => Throttle: ");
+//      Serial.print(data.throttle);
+//      Serial.print("  Yaw: ");
+//      Serial.print(data.yaw);
+//      Serial.print("  Pitch: ");
+//      Serial.print(data.pitch);
+//      Serial.print("  Roll: ");
+//      Serial.print(data.roll);
+//      Serial.print("  AUX1: ");
+//      Serial.print(data.AUX1);
+//      Serial.print("  AUX2: ");
+//      Serial.println(data.AUX2);
     
     }
   }
