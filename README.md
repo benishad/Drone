@@ -113,9 +113,9 @@
     아래 링크를 통해 Multiwii를 다운로드하여 사용합니다.
   <br>
   <br>
-  ```
-  http://www.multiwii.com/
-  ```
+
+    [Multiwii 다운로드](http://www.multiwii.com/) 바로가기
+
   <br>
   <br>
   <img src="/img/멀티위 설치.png" alt="image" width="500" height="auto"><br><br>
