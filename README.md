@@ -9,6 +9,10 @@
 
 - 조종기와 드론 사이에 중계소 역할을 하는 드론을 제작하는 것이 중계 드론 프로젝트 입니다.
 
+- 드론 시뮬레이터를 제작하여 문서에서 제작한 조종기를 사용하여 드론 조종 훈련이 가능합니다.
+
+
+
 ![휴대폰_통신_이미지](./img/휴대폰%20통신%20이미지.png "휴대전화 통신 방식")<br>
 
 ![중계드론이미지](./img/중계드론이미지.png "중계 통신 드론 방식")
@@ -23,8 +27,11 @@
     - [회로도](#회로도)
     - [드론 제작에 앞서](#드론-제작에-앞서)
     - [제작 과정](#제작-과정)
-    - [테스트](#테스트)
+    - [문서](#문서)
 
+3. [중계 드론 빌드 방법 PDF](https://drive.google.com/file/d/1Zqlsaz8OV26cVhaoOtoAvIVqaOmRjo3B/view?usp=sharing)
+
+4.  [드론 시뮬레이터 다운로드](https://drive.google.com/file/d/1ymEPB1GEQYfEJyJiITfJfxDNSJ_VvF2R/view) 설정 방법은 문서를 참고
  
 <br>
 
@@ -42,7 +49,7 @@
 - 토글 스위치 **(필수)**
 - 헤더 핀 소켓
 - 3mm 인서트 너트
-- 진동 방지용 댐퍼
+- 진동 방지용 댐퍼 **(필수)**
 - F450 드론 프레임 **(필수)**
 - 모터와 ESC (ESC용량에 주의해 주세요.) **(필수)**
 - 배터리와 프롭 **(필수)**
@@ -55,13 +62,17 @@
   >회로는 조종기, 중계 드론, 메인 드론 3가지 입니다.
 
 ### 조종기
-![조종기_회로](./img/조종기%20회로.png "조종기 회로")<br>
+![조종기_회로](./img/조종기%20회로%20최종.png "조종기 회로")<br>
 
 ### 중계 드론
-![중계기_회로](./img/중계기%20회로.png "중계기 회로")<br>
+![중계기_회로](./img/중계기%20회로%20최종.png "중계기 회로")<br>
 
 ### 메인 드론
-![메인기_회로](./img/메인기%20회로.png "메인기 회로")<br>
+![메인기_회로](./img/메인기%20회로%20최종.png "메인기 회로")<br>
+
+### 시뮬레이터 수신기
+![메인기_회로](./img/수신기%20회로%20최종.jpg "메인기 회로")<br>
+수신기는 위에 제작한 중계 드론과 메인 드론 회로와 동일합니다. 따라서 두 드론 중 하나를 사용하여 소스코드를 업로드하는 것으로 시뮬레이터 수신기로 사용이 가능합니다.
 
 <br>
 
@@ -95,6 +106,19 @@
     <img src="/img/멀티미터.jpg" alt="image" width="500" height="auto">
   
   <br>
+
+  - ### Multiwii
+    Multiwii는 드론 제작에 많이 사용되는 FC(Flight Controller) 소프트웨어입니다.
+    Multiwii는 오픈 소스 프로젝트로서, 사용자들이 자유롭게 소스 코드를 수정하거나 개선할 수 있습니다. 개인적인 프로젝트부터 상업적인 제품까지, 다양한 범위에서 사용될 수 있습니다.<br>
+    아래 링크를 통해 Multiwii를 다운로드하여 사용합니다.
+  <br>
+  <br>
+  ```
+  http://www.multiwii.com/
+  ```
+  <br>
+  <br>
+  <img src="/img/멀티위 설치.png" alt="image" width="500" height="auto"><br><br>
   
   
 
@@ -138,9 +162,7 @@
     <img src="/img/고장난 조종기 뒤.jpg" alt="image" width="500" height="auto"><br>
 
     #### 조종기 ver.2
-    <img src="/img/기판 조종기 앞.jpg" alt="image" width="500" height="auto"><br>
-
-    <img src="/img/기판 조종기 뒤.jpg" alt="image" width="500" height="auto"><br>
+    <img src="/img/출력 조종기.png" alt="image" width="500" height="auto"><br>
 
   - ### MPU6050 설치 과정
     mpu6050은 수평을 유지시키기 위한 핵심 부품 입니다. 비행시 mpu6050에 문제가 생기지 않게 댐퍼와 출력물을 사용해 mpu6050을 고정해야 합니다.
@@ -160,14 +182,10 @@
 
     <img src="/img/mpu완료.jpg" alt="image" width="500" height="auto">
 
-  - ### 중계기 제작
-    사진
-
-  - ### 메인기 제작
-    사진
-
 <br>
 
-## 테스트
+## 문서
 
-  사진
+  이후 모든 작업에 대한 설명은 아래 문서에 기술
+
+[중계 드론 빌드 방법 PDF](https://drive.google.com/file/d/1Zqlsaz8OV26cVhaoOtoAvIVqaOmRjo3B/view?usp=sharing)
